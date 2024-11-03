@@ -1,0 +1,158 @@
+
+<!doctype html>
+
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+  <meta name="theme-color" content="#4F7DC9">
+  <meta charset="UTF-8">
+  <title>Proyecto 1.1: Bastionado de la BIOS/UEFI</title>
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Source+Code+Pro:400|Roboto:400,300,400italic,500,700|Roboto+Mono">
+  <link rel="stylesheet" href="//fonts.googleapis.com/icon?family=Material+Icons">
+  <link rel="stylesheet" href="https://storage.googleapis.com/claat-public/codelab-elements.css">
+  <style>
+    .success {
+      color: #1e8e3e;
+    }
+    .error {
+      color: red;
+    }
+  </style>
+</head>
+<body>
+  <google-codelab-analytics gaid="UA-49880327-14"></google-codelab-analytics>
+  <google-codelab codelab-gaid=""
+                  id="p1.b.yag"
+                  title="Proyecto 1.1: Bastionado de la BIOS/UEFI"
+                  environment="web"
+                  feedback-link="">
+    
+      <google-codelab-step label="Introducción" duration="0">
+        <p>El bastionado de la BIOS/UEFI es un proceso fundamental para proteger la configuración de seguridad de un equipo desde el momento en que se enciende. La BIOS/UEFI es el sistema encargado de inicializar el hardware antes de cargar el sistema operativo, y su configuración adecuada permite controlar quién puede acceder al dispositivo y desde qué fuentes puede arrancar. Este trabajo aborda medidas esenciales de seguridad que incluyen el establecimiento de contraseñas de usuario y administrador, la desactivación de arranques externos y la configuración de un orden de arranque seguro. También se exploran opciones avanzadas, como el Arranque Seguro (Secure Boot) y el Trusted Platform Module (TPM), que refuerzan la protección contra intentos de acceso no autorizados desde el nivel más bajo del sistema. Al implementar estas medidas, se asegura un entorno más seguro y confiable para el equipo y sus datos.</p>
+<p class="image-container"><img alt="ImagenAccesoBIOS" src="img\\9518f0ecdddca24a.png"></p>
+<p><em>Para este proyecto de bastionado de BIOS/UEFI, se ha utilizado una BIOS de MSI, específicamente el modelo MAG B650 TOMAHAWK WIFI con versión E7D75AMS.110. Es importante tener en cuenta que la interfaz y las opciones de configuración pueden variar significativamente entre diferentes fabricantes de BIOS. Cada fabricante puede organizar y nombrar las opciones de seguridad de forma distinta, lo que implica que algunos pasos descritos podrían diferir o no estar disponibles en otras marcas o modelos. Por esta razón, se recomienda consultar la documentación específica de cada fabricante para asegurar una configuración correcta y completa del bastionado.</em></p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Acceso a la Configuración de la BIOS/UEFI" duration="0">
+        <p>El primer paso para asegurar la BIOS/UEFI es aprender a acceder al menú de configuración, ya que cada fabricante puede asignar diferentes teclas para entrar a este menú. Para ello, reinicia el equipo y, al iniciar, presiona la tecla que normalmente aparece en la pantalla (las más comunes son Supr, F2, F10 o Esc).</p>
+<p>Para facilitar el acceso a la configuración de la BIOS/UEFI según el fabricante del equipo, a continuación se presenta una tabla con los fabricantes más comunes y las teclas que suelen utilizarse para ingresar al menú de configuración.</p>
+<table>
+<tr><td colspan="1" rowspan="1"><p>Fabricante</p>
+</td><td colspan="1" rowspan="1"><p>Tecla de acceso a BIOS/UEFI</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p>ASUS</p>
+</td><td colspan="1" rowspan="1"><p>F2, Supr o F9</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p>Acer</p>
+</td><td colspan="1" rowspan="1"><p>F2 o Supr</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p>Dell</p>
+</td><td colspan="1" rowspan="1"><p>F2</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p>HP</p>
+</td><td colspan="1" rowspan="1"><p>F10, Esc o F1</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p>Lenovo</p>
+</td><td colspan="1" rowspan="1"><p>F1, F2 o Fn + F2</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p>MSI</p>
+</td><td colspan="1" rowspan="1"><p>Supr</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p>Toshiba</p>
+</td><td colspan="1" rowspan="1"><p>F1, Esc o F12</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p>Samsung</p>
+</td><td colspan="1" rowspan="1"><p>F2 o F10</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p>Sony</p>
+</td><td colspan="1" rowspan="1"><p>F1, F2 o F3</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p>Gigabyte</p>
+</td><td colspan="1" rowspan="1"><p>Supr o F2</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p>Intel</p>
+</td><td colspan="1" rowspan="1"><p>F2</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p>Lenovo ThinkPad</p>
+</td><td colspan="1" rowspan="1"><p>Enter y F1</p>
+</td></tr>
+</table>
+<p>Esta tabla puede ayudarte a identificar rápidamente la tecla que necesitas para acceder a la configuración de BIOS/UEFI en función del fabricante del equipo.</p>
+<p>En la imagen a continuación se muestra un ejemplo de una pantalla de inicio típica, que indica la tecla específica a presionar para ingresar a la BIOS/UEFI.</p>
+<p><img alt="ImagenAccesoBIOS" src="img\\e84ebbbe4cc17b16.jpg"><em>Ilustración: Imagen de pantalla de inicio con instrucciones para acceder a la BIOS/UEFI y ejemplos de teclas comunes para acceder a ella.</em></p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Contraseña de Administrador o Supervisor Password" duration="0">
+        <p>Es importante configurar una contraseña de administrador (o Supervisor Password) para proteger el acceso al propio menú de configuración de la BIOS/UEFI. Esta contraseña solo debe estar disponible para personas autorizadas, ya que permite realizar cambios en configuraciones sensibles, como el orden de arranque y las opciones de seguridad avanzadas. Para establecerla, entraremos en las opciones avanzadas de la BIOS, luego en &#34;Settings&#34;, &#34;Security&#34;, y por ultimo le damos en &#34;Administrator password&#34; para ponerle una contraseña.</p>
+<p><img alt="ImagenPOP" src="img\\ecece59040b61292.jpg"><em>Ilustración: Imagen de la pantalla de inicio, con la opcion de Opciones Avanzadas</em></p>
+<p><img alt="ImagenPOP" src="img\\af11e898926ec379.jpg"><em>Ilustración: Imagen de la pantalla de opciones avanzada, click en settings</em></p>
+<p><img alt="ImagenPOP" src="img\\fdf0111d645ebf1a.jpg"><em>Ilustración: Imagen de la pantalla de settings, click en Security</em></p>
+<p><img alt="ImagenPOP" src="img\\9c3cf4fc34e53542.jpg"><em>Ilustración: Imagen de la pantalla de settings, click en Administrator password</em></p>
+<p><img alt="ImagenPOP" src="img\\87caf20876f1bd90.jpg"><em>Ilustración: Imagen de la pantalla de creacion de la contraseña</em></p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Establecimiento de la Contraseña de Usuario o Power-On Password" duration="0">
+        <p>El siguiente paso es configurar una contraseña de usuario o de encendido, también conocida como &#34;Power-On Password&#34;. Esta contraseña se solicita cada vez que se enciende el equipo, protegiéndolo contra accesos no autorizados. En el menú de opciones avanzadas, entramos en &#34;settings&#34;, luego en &#34;Security&#34; y por ultimo clicamos en &#34;User password&#34; para ponerle una contraseña.</p>
+<p><img alt="ImagenPOP" src="img\\ecece59040b61292.jpg"><em>Ilustración: Imagen de la pantalla de inicio, con la opcion de Opciones Avanzadas</em></p>
+<p><img alt="ImagenPOP" src="img\\af11e898926ec379.jpg"><em>Ilustración: Imagen de la pantalla de opciones avanzada, click en settings</em></p>
+<p><img alt="ImagenPOP" src="img\\fdf0111d645ebf1a.jpg"><em>Ilustración: Imagen de la pantalla de settings, click en Security</em></p>
+<p><img alt="ImagenPOP" src="img\\af9205dd37b7aae6.jpg"><em>Ilustración: Imagen de la pantalla de settings, click en User password</em></p>
+<p><img alt="ImagenPOP" src="img\\571c6d7f09543204.jpg"><em>Ilustración: Imagen de la pantalla de creacion de la contraseña</em></p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Configurar el Orden de Arranque Seguro" duration="0">
+        <p>Para garantizar que el equipo siempre arranque desde el sistema operativo autorizado, ajusta el orden de arranque para que el disco duro interno esté en primer lugar. En el menú &#34;Boot Order&#34;, selecciona el disco interno y asegúrate de que esté en la primera posición. También es aconsejable mover todos los dispositivos externos al final de la lista, o directamente deshabilitarlos como veremos mas adelante para evitar cualquier intento de acceso no autorizado desde dispositivos extraíbles. Para ello vamos a &#34;Opciones Avanzadas&#34; &gt; &#34;settings&#34; &gt; &#34;Boot&#34; y ponemos el disco principal primero y los USB los bajamos a bajo del todo.</p>
+<p><img alt="ImagenPOP" src="img\\ecece59040b61292.jpg"><em>Ilustración: Imagen de la pantalla de inicio, con la opcion de Opciones Avanzadas</em></p>
+<p><img alt="ImagenPOP" src="img\\af11e898926ec379.jpg"><em>Ilustración: Imagen de la pantalla de opciones avanzada, click en settings</em></p>
+<p><img alt="ImagenPOP" src="img\\83868b0ec51ec409.jpg"><em>Ilustración: Imagen de la pantalla de settings, click en Boot</em></p>
+<p><img alt="ImagenPOP" src="img\\6852f561b384845d.jpg"><em>Ilustración: Imagen de la pantalla de Boot, disco principal en primera opcion</em></p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Deshabilitar Arranques Externos" duration="0">
+        <p>Una de las opciones más efectivas para prevenir ataques físicos es deshabilitar el arranque desde dispositivos externos, como unidades USB o discos CD/DVD. Estos medios pueden ser utilizados para cargar sistemas operativos alternativos o herramientas que eludan las medidas de seguridad. Para su configuracion, nuevamente entraremos en las opciones avanzadas, luego en &#34;Settings&#34;, luego entramos en &#34;Boot&#34; y desabilitamos todos los boot options menos el disco duro principal con sistema operativo.</p>
+<p><img alt="ImagenPOP" src="img\\ecece59040b61292.jpg"><em>Ilustración: Imagen de la pantalla de inicio, con la opcion de Opciones Avanzadas</em></p>
+<p><img alt="ImagenPOP" src="img\\af11e898926ec379.jpg"><em>Ilustración: Imagen de la pantalla de opciones avanzada, click en settings</em></p>
+<p><img alt="ImagenPOP" src="img\\83868b0ec51ec409.jpg"><em>Ilustración: Imagen de la pantalla de settings, click en Boot</em></p>
+<p><img alt="ImagenPOP" src="img\\cf8927dcf54df7bd.jpg"><em>Ilustración: Imagen de la pantalla de Boot, desabilitamos todos los boot options</em></p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Opciones de Seguridad Avanzadas: Arranque Seguro (Secure Boot)" duration="0">
+        <p>El &#34;Arranque Seguro&#34; o &#34;Secure Boot&#34; es una opción que asegura que el sistema solo cargue sistemas operativos firmados y autorizados por el fabricante, previniendo el uso de bootloaders modificados o de sistemas no confiables. Esta función es especialmente útil para proteger el equipo de malware que intenta cargarse durante el inicio. Para activar el &#34;Arranque Seguro&#34;, dirígete a la sección de &#34;Security Boot&#34; dentro de ella encontraremos la opcion que tendremos que habilitar, para ello la pondremos en &#34;Enabled&#34;. Asegúrate de que el modo de arranque esté configurado en UEFI, ya que es necesario para que Secure Boot funcione correctamente.</p>
+<p><img alt="ImagenPOP" src="img\\ecece59040b61292.jpg"><em>Ilustración: Imagen de la pantalla de inicio, con la opcion de Opciones Avanzadas</em></p>
+<p><img alt="ImagenPOP" src="img\\af11e898926ec379.jpg"><em>Ilustración: Imagen de la activacion de la contraseña de usuario</em></p>
+<p><img alt="ImagenPOP" src="img\\83868b0ec51ec409.jpg"><em>Ilustración: Imagen de la pantalla de settings, click en Security</em></p>
+<p><img alt="ImagenPOP" src="img\\41d6011ee9c8312d.jpg"><em>Ilustración: Imagen de la pantalla de Security, Security Boot</em></p>
+<p><img alt="ImagenPOP" src="img\\4f7acd4524da5260.jpg"><em>Ilustración: Imagen de la pantalla de Security Boot, click en Security Boot &gt; Enabled</em></p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Opciones de Seguridad Avanzadas: Trusted Platform Module (TPM)" duration="0">
+        <p>El &#34;Trusted Platform Module&#34; (TPM) es un componente de seguridad que se encarga de almacenar claves de cifrado y asegurar la integridad del sistema. Activar el TPM añade una capa de protección adicional, ya que permite el cifrado de datos sensibles y refuerza las medidas de autenticación. Para habilitar esta función, dirígete a la sección de seguridad o configuración avanzada de la BIOS/UEFI y selecciona la opción de TPM. En este caso en la pagina principal de la BIOS hay un acceso rapido a ella. Esta opción es compatible con tecnologías de cifrado avanzadas como BitLocker en Windows y LUKS en Linux, brindando mayor seguridad al sistema.</p>
+<p><img alt="ImagenPOP" src="img\\c9469ea9f5c643b6.jpg"><em>Ilustración: Imagen de la pantalla de inicio, On TPM</em></p>
+
+
+      </google-codelab-step>
+    
+  </google-codelab>
+
+  <script src="https://storage.googleapis.com/claat-public/native-shim.js"></script>
+  <script src="https://storage.googleapis.com/claat-public/custom-elements.min.js"></script>
+  <script src="https://storage.googleapis.com/claat-public/prettify.js"></script>
+  <script src="https://storage.googleapis.com/claat-public/codelab-elements.js"></script>
+  <script src="//support.google.com/inapp/api.js"></script>
+
+</body>
+</html>
